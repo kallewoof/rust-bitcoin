@@ -52,6 +52,8 @@ user_enum! {
         Bitcoin <-> "bitcoin",
         /// Bitcoin's testnet
         Testnet <-> "testnet",
+        /// Bitcoin's signet
+        Signet <-> "signet",
         /// Bitcoin's regtest
         Regtest <-> "regtest"
     }
@@ -73,6 +75,7 @@ impl Network {
         match magic {
             0xD9B4BEF9 => Some(Network::Bitcoin),
             0x0709110B => Some(Network::Testnet),
+            0x7EC653A5 => Some(Network::Signet),
             0xDAB5BFFA => Some(Network::Regtest),
             _ => None
         }
@@ -94,6 +97,7 @@ impl Network {
         match *self {
             Network::Bitcoin => 0xD9B4BEF9,
             Network::Testnet => 0x0709110B,
+            Network::Signet  => 0x7EC653A5,
             Network::Regtest => 0xDAB5BFFA,
         }
     }
@@ -115,6 +119,10 @@ mod tests {
             &[0x0b, 0x11, 0x09, 0x07]
         );
         assert_eq!(
+            serialize(&Network::Signet.magic()),
+            &[0xa5, 0x53, 0xc6, 0x7e]
+        );
+        assert_eq!(
             serialize(&Network::Regtest.magic()),
             &[0xfa, 0xbf, 0xb5, 0xda]
         );
@@ -128,6 +136,10 @@ mod tests {
             Some(Network::Testnet.magic())
         );
         assert_eq!(
+            deserialize(&[0xa5, 0x53, 0xc6, 0x7e]).ok(),
+            Some(Network::Signet.magic())
+        );
+        assert_eq!(
             deserialize(&[0xfa, 0xbf, 0xb5, 0xda]).ok(),
             Some(Network::Regtest.magic())
         );
@@ -138,10 +150,11 @@ mod tests {
       assert_eq!(Network::Bitcoin.to_string(), "bitcoin");
       assert_eq!(Network::Testnet.to_string(), "testnet");
       assert_eq!(Network::Regtest.to_string(), "regtest");
-
+      assert_eq!(Network::Signet.to_string(), "signet");
       assert_eq!("bitcoin".parse::<Network>().unwrap(), Network::Bitcoin);
       assert_eq!("testnet".parse::<Network>().unwrap(), Network::Testnet);
       assert_eq!("regtest".parse::<Network>().unwrap(), Network::Regtest);
+      assert_eq!("signet".parse::<Network>().unwrap(), Network::Signet);
       assert!("fakenet".parse::<Network>().is_err());
   }
 }
