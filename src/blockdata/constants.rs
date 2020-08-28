@@ -227,7 +227,7 @@ mod test {
         assert_eq!(gen.header.time, 1534313275);
         assert_eq!(gen.header.bits, 0x1e2adc28);
         assert_eq!(gen.header.nonce, 100123);
-        assert_eq!(format!("{:x}", gen.header.block_hash()),
+        assert_eq!(format!("{:x}", gen.header.bitcoin_hash()),
                    "0000032d7f67af9ec7b7152aea0fe7c95b9804ff973265e252f245e0ae61799d".to_string());
     }
 }
